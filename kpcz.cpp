@@ -2,33 +2,49 @@
 int main()
 {
 	int cz(int* p, int start, int end, int k);
-	int a[200], start, end,n,k;
+	int a[1000], start[1000], end[1000], n, k[1000],m;
 	scanf_s("%d", &n);
 	for (int i = 0; i < n; i++)
 		scanf_s("%d", &a[i]);
-	scanf_s("%d %d %d", &start, &end,&k);
-	printf("%d", cz(a, start-1, end-1, k-1));
-}
-int cz(int* p, int start, int end,int k)
-{
-	int r = p[end];
-	int i = start;
-	if (i == k)
-		return p[i];
-	for (int j = start; j <= end; j++)
+	scanf_s("%d", &m);
+	for(int i =0;i<m;i++)
+		scanf_s("%d %d %d", &start[i], &end[i], &k[i]);
+	for (int i = 0; i < m; i++)
 	{
-		if (p[j] <= r)
+		int b[1000];
+		for (int j = 0; j < n; j++)
+			b[j] = a[j];
+		printf("%d\n", cz(b, start[i] - 1, end[i] - 1, start[i]-1+k[i] - 1));
+	}
+}
+int cz(int* p, int start, int end, int k)
+{
+	int partion(int* a, int p, int r);
+	int q = partion(p, start, end); 
+	if (q == k)
+		return p[q];
+	else if (q < k)
+		cz(p, q + 1, end, k);
+	else
+		cz(p, start, q - 1, k);
+}
+int partion(int* a, int p, int r)
+{
+	int x = a[r];
+	int i = p - 1;
+	int temp;
+	for (int j = p; j < r; j++)
+	{
+		if (a[j] > x)
 		{
-			p[j] = p[j] ^ p[i];
-			p[i] = p[j] ^ p[i];
-			p[j] = p[j] ^ p[i];
 			i++;
+			temp = a[i];
+			a[i] = a[j];
+			a[j] = temp;
 		}
 	}
-	i--;
-	if (i < k)
-		cz(p, i+1, end, k);
-	else
-		cz(p, start, i-1, k);
-		
+	temp = a[i + 1];
+	a[i + 1] = a[r];
+	a[r] = temp;
+	return i + 1;
 }
