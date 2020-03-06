@@ -18,22 +18,26 @@ trie* creatnode()
 void insertnode(trie *root,char* s,int i)
 {
 	if (i == strlen(s))
+	{
+		root->flag = 0;
 		return;
+	}
 	if (root->next[s[i] - 'a'] == NULL)
 	{
 		trie* p = creatnode();
 		root->next[s[i] - 'a'] = p;
+		
 		insertnode(p, s, i + 1);
 	}
 	else
 	{
-		root->flag++;
+		
 		insertnode(root->next[s[i] - 'a'], s, i + 1);
 	}
 }
 int search(trie* root, char* s, int i)
 {
-	if(i==strlen(s)&&root->flag==1)
+	if(i==strlen(s)&&root->flag==0)
 		return 1;
 	if (root->next[s[i] - 'a'] != NULL)
 		return search(root->next[s[i] - 'a'], s, i + 1);
