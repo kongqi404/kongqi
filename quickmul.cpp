@@ -20,7 +20,7 @@ class FFT
 {
     public:
     complex<double> s1[N],s2[N];
-    FFT(string a,string b)
+    FFT(string a,string b)                     //初始化
     {
         try
         {
@@ -28,7 +28,7 @@ class FFT
             {
                 s1[i]=a[i]-'0';
             }
-            reverse(s1,s1+a.size());
+            reverse(s1,s1+a.size());  //反转
             for(int i=0;i<b.size();i++)
             {
                 s2[i]=b[i]-'0';
@@ -40,42 +40,42 @@ class FFT
             std::cerr << e.what() << '\n';
         }
     }
-    vector<int> cal()
+    vector<int> cal()  //计算
     {
-        fft(s1,N,-1),fft(s2,N,-1);
+        fft(s1,N,-1),fft(s2,N,-1);   //对两个序列进行傅里叶变换
         for(int i=0;i<N;i++)
         {
-            s1[i]*=s2[i];
+            s1[i]*=s2[i];       //求卷积
         }
-        idft(s1,N);
+        idft(s1,N);    //逆变换为序列
         vector<int> res;
         for(int i=0,t=0;i<N||t;i++)
         {
-            int x = i<N?(int)(s1[i].real()+0.5)+t:t;
+            int x = i<N?(int)(s1[i].real()+0.5)+t:t;   //防止精度+0.5
             res.push_back(x%10);
             t=x/10;
         }
-        while(res.back()==0) res.pop_back();
-        reverse(res.begin(),res.end());
+        while(res.back()==0) res.pop_back();                //去0
+        reverse(res.begin(),res.end());   //反转
         return res;
     }
-    void fft(complex<double> a[], int n, int j)
+    void fft(complex<double> a[], int n, int j)     //fft
     {
         if(n==1) return;
         int mid = n/2;
-        static complex<double> b[N];
-        for(int i=0;i<mid;i++)b[i]=a[i*2],b[i+mid]=a[i*2+1];
+        static complex<double> b[N]; 
+        for(int i=0;i<mid;i++)b[i]=a[i*2],b[i+mid]=a[i*2+1];           //分奇偶
         memcpy(a,b,sizeof(complex<double>)*n);
-        fft(a,mid,j),fft(a+mid,mid,j);
+        fft(a,mid,j),fft(a+mid,mid,j);           //递归
         for(int i=0;i<mid;i++)
         {
-            complex<double> x(cos(2*M_PI*i/n),j*sin(2*M_PI*i/n));
+            complex<double> x(cos(2*M_PI*i/n),j*sin(2*M_PI*i/n));          //dft
             b[i]=a[i]+x*a[i+mid];
             b[i+mid]=a[i]-x*a[i+mid];
         }
         memcpy(a,b,sizeof(complex<double>)*n);
     }
-    void idft(complex<double> a[], int n)
+    void idft(complex<double> a[], int n)  //逆变换
     {
         fft(a,n,1);
         for(int i=0;i<n;i++) a[i]/=n;
@@ -83,7 +83,7 @@ class FFT
 
 };
 
-// class FHT{
+// class FHT{                       //fht有问题
 //     public:
 //     double s1[N],s2[N];
 //     FHT(string a,string b)
